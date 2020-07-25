@@ -1,0 +1,29 @@
+{
+  "name": "phonebookbackend",
+  "version": "1.0.0",
+  "description": "a backend for a phonebook",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nkroger/fullstackbackend.git"
+  },
+  "author": "Niklas Kröger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nkroger/fullstackbackend/issues"
+  },
+  "homepage": "https://github.com/nkroger/fullstackbackend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
