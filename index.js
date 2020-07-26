@@ -6,6 +6,7 @@ const app = express()
 app.use(cors())
 
 app.use(express.json())
+app.use(express.static('build'))
 
 morgan.token('post-body', (req, res) => {
     if (req.method == 'POST') {
@@ -46,10 +47,6 @@ const generateId = () => {
     return Math.floor(Math.random() * 999999)
 }
 
-
-app.get('/', (request, response) => {
-    response.send('<h1>Hello there</h1>')
-})
 
 app.get('/info', (request, response) => {
     const date = new Date()
