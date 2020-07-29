@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 const app = express()
 app.use(cors())
@@ -61,18 +63,15 @@ app.get('/info', (request, response) => {
 
 
 app.get('/api/persons', (request, response) => {
-    response.json(people)
+    Person.find({}).then( people => {
+        response.json(people)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = people.find(person => person.id === id)
-
-    if (person) {
+    Person.findById(request.params.id).then( person => {
         response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -97,25 +96,25 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    // Name must be unique
+    /* Name must be unique
     if (people.map(p => p.name).includes(body.name)) {
         return response.status(400).json({
             error: 'Name already exists in the phonebook'
         })
-    }
+    }*/
 
     // Create new person
-    const person = {
+    const person = new Person({
         name: body.name,
-        number: body.number,
-        id: generateId(),
-    }
-
-    people = people.concat(person)
-
-    response.json(person)
+        number: body.number
+    })
+    
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
 
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+})
