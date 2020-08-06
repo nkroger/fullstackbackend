@@ -62,27 +62,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
         .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
-
-    // Must have name and nubmer
-    if (!body.name) {
-        return response.status(400).json({
-            error: 'name missing'
-        })
-    }
-    if (!body.number) {
-        return response.status(400).json({
-            error: 'number missing'
-        })
-    }
-
-    /* Name must be unique
-    if (people.map(p => p.name).includes(body.name)) {
-        return response.status(400).json({
-            error: 'Name already exists in the phonebook'
-        })
-    }*/
 
     // Create new person
     const person = new Person({
@@ -90,9 +71,13 @@ app.post('/api/persons', (request, response) => {
         number: body.number
     })
     
-    person.save().then(savedPerson => {
-        response.json(savedPerson)
-    })
+    person
+        .save()
+        .then(savedPerson => savedPerson.toJSON())
+        .then(formattedPerson => {
+            response.json(formattedPerson)
+        })
+        .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -100,10 +85,10 @@ app.put('/api/persons/:id', (request, response, next) => {
 
     const person = {
         name: body.name,
-        number: body.number,
+        number: body.number
     }
 
-    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    Person.findByIdAndUpdate(request.params.id, person, { /*runValidators: true,*/ new: true })
         .then(updatedPerson => {
             response.json(updatedPerson)
         })
@@ -122,6 +107,8 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === 'CastError' && error.kind == 'ObjectId') {
         return response.status(400).send({ error: 'malformed id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
