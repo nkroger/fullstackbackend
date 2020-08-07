@@ -12,7 +12,7 @@ const password = process.argv[2]
 
 const url = `mongodb+srv://fullstack:${password}@cluster0.cmmmf.mongodb.net/test?retryWrites=true&w=majority`
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const personSchema = new mongoose.Schema({
   name: String,
@@ -22,7 +22,7 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema)
 
 
-if (args == 3) {
+if (args === 3) {
   Person.find({}).then( result => {
     console.log('Phonebook:')
     result.forEach( person => {
